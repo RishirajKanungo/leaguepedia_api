@@ -1,4 +1,5 @@
 from mwrogue.esports_client import EsportsClient
+from collections import defaultdict
 site = EsportsClient("lol")
 
 # Player class that contains all the information about a player (gamplay, team, etc.)
@@ -126,3 +127,94 @@ class Player:
         
         return round(total_cs / total_gamelength, 1)
         
+    def getChampsPlayed(self, tournament):
+        champs_played_response = site.cargo_client.query(
+            tables="ScoreboardPlayers=SP, ScoreboardGames=SG",
+            fields="SP.Champion",
+            where=f"SP.Link = '{self.playerName}' AND SG.Tournament = '{tournament}'",
+            join_on="SP.GameId=SG.GameId"
+        )
+        
+        champs_played_dict = [dict(item) for item in champs_played_response]
+        
+        # Initialize a defaultdict to count the occurrences of names
+        name_count = defaultdict(int)
+
+        # Iterate through the list of dictionaries and update the counts
+        for item in champs_played_dict:
+            name = item['Champion']
+            name_count[name] += 1
+
+        # Convert the defaultdict to a regular dictionary if needed
+        name_count_dict = dict(name_count)
+
+        self.stats[tournament]['ChampionsPlayed'] = name_count_dict
+        
+        return name_count_dict
+    
+    def getWinRate(self, tournament):
+        wins = 0
+        losses = 0
+        
+        winrate_response = site.cargo_client.query(
+            tables="ScoreboardPlayers=SP, ScoreboardGames=SG",
+            fields="SP.PlayerWin",
+            where=f"SP.Link = '{self.playerName}' AND SG.Tournament = '{tournament}'",
+            join_on="SP.GameId=SG.GameId"
+        )
+        
+        winrate_dict = [dict(item) for item in winrate_response]
+        
+        for game in winrate_dict:
+            if game['PlayerWin'] == 'Yes':
+                wins += 1
+            else:
+                losses += 1
+        
+        self.stats[tournament]['WinRate'] = round(wins / (wins + losses), 3)
+        
+        return round(wins / (wins + losses), 3)
+    
+    def getDPM(self, tournament):
+        total_dmg = 0
+        total_gamelength = 0
+        
+        dpm_response = site.cargo_client.query(
+            tables="ScoreboardPlayers=SP, ScoreboardGames=SG",
+            fields="SP.DamageToChampions, SG.Gamelength_Number",
+            where=f"SP.Link = '{self.playerName}' AND SG.Tournament = '{tournament}'",
+            join_on="SP.GameId=SG.GameId"
+        )
+        
+        output = [dict(item) for item in dpm_response]
+        
+        total_dmg = sum(int(i['DamageToChampions']) for i in output)
+        
+        total_gamelength = sum(round(float(i['Gamelength Number']), 3) for i in output)
+
+        # total_gamelength = sum(float(i['Gamelength Number']) for i in output)
+            
+        self.stats[tournament]['DPM'] = round(total_dmg / total_gamelength, 1)
+        
+        return round(total_dmg / total_gamelength, 1)
+    
+    def getGoldPercentage(self, tournament):
+        total_gold = 0
+        total_team_gold = 0
+        
+        gold_response = site.cargo_client.query(
+            tables="ScoreboardPlayers=SP, ScoreboardGames=SG",
+            fields="SP.Gold, SP.TeamGold",
+            where=f"SP.Link = '{self.playerName}' AND SG.Tournament = '{tournament}'",
+            join_on="SP.GameId=SG.GameId"
+        )
+        
+        output = [dict(item) for item in gold_response]
+        
+        total_gold = sum(int(i['Gold']) for i in output)
+        total_team_gold = sum(int(i['TeamGold']) for i in output)
+        
+            
+        self.stats[tournament]['GoldPercentage'] = round(total_gold / total_team_gold, 3)
+        
+        return round(total_gold / total_team_gold, 3)

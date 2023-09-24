@@ -7,23 +7,8 @@ import pprint
 
 site = EsportsClient("lol")
 
-# response = site.cargo_client.query(
-#     tables="Tenures=T, RosterChanges=RC",
-#     fields="T.Player, T.Team, T.DateJoin, RC.Roles",
-#     where="T.Team = 'Team Liquid' AND T.DateLeave IS NULL",
-#     join_on="T.RosterChangeIdJoin=RC.RosterChangeId",
-#     group_by="T.Player"
-# )
-
 player_name = 'Doublelift'
 tournament = "LCS 2023 Summer"
-
-response = site.cargo_client.query(
-    tables="ScoreboardPlayers=SP, Tournaments=T",
-    fields="SP.Kills, SP.Deaths, SP.Assists, SP.Gold",
-    where=f"SP.Link = '{player_name}' AND T.StandardName = '{tournament}'",
-    join_on="SP.OverviewPage=T.OverviewPage"
-)
 
 # cspm_response = site.cargo_client.query(
 #     tables="ScoreboardPlayers=SP, ScoreboardGames=SG",
@@ -33,12 +18,13 @@ response = site.cargo_client.query(
 # )
 
 doublelift = Player(player_name)
+doublelift.getKDAInSplit(tournament)
 doublelift.getCSPM(tournament)
-# pprint.pprint(cspm_response)
-# output = [dict(item) for item in cspm_response]
-# print(output)
-
-# pprint.pprint(response)
+doublelift.getChampsPlayed(tournament)
+doublelift.getWinRate(tournament)
+doublelift.getDPM(tournament)
+doublelift.getGoldPercentage(tournament)
+pprint.pprint(doublelift.stats)
 
 '''
 team_liquid = Team("Team Liquid")
@@ -54,3 +40,21 @@ team_liquid.getPlayers()
 # 	join_on= "MSG.MatchId=MS.MatchId",
 # 	order_by= "MS.DateTime_UTC ASC"
 # )
+
+# Query for a matchup
+matchup_response = site.cargo_client.query(
+    tables="ScoreboardPlayers=SP, ScoreboardPlayers=SPVs",
+    join_on="SP.UniqueRoleVs=SPVs.UniqueRole",
+    fields="SP.Link, SPVs.Link=LinkVs, SP.Champion, SPVs.Champion=ChampionVs, SP.GameId",
+    where="SP.Champion = 'Diana' AND SPVs.Champion = 'Nocturne'"
+)
+
+# Query for most played champions that split
+champs_played_response = site.cargo_client.query(
+    tables="ScoreboardPlayers=SP, ScoreboardGames=SG",
+    fields="SP.Champion",
+    where=f"SP.Link = '{player_name}' AND SG.Tournament = '{tournament}'",
+    join_on="SP.GameId=SG.GameId"
+)
+
+champs_played = [dict(item) for item in champs_played_response]
