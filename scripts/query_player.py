@@ -26,6 +26,29 @@ doublelift.getDPM(tournament)
 doublelift.getGoldPercentage(tournament)
 pprint.pprint(doublelift.stats)
 
+# player_team = site.cargo_client.query(
+#             limit=1,
+#             tables="ScoreboardPlayers=SP, ScoreboardGames=SG",
+#             fields="SP.Team",
+#             where=f"SP.Link = '{player_name}' AND SG.Tournament = '{tournament}'",
+#             join_on="SP.GameId=SG.GameId"
+#         )
+
+# teamName = [dict(item) for item in player_team]
+
+# pprint.pprint(player_team)
+
+# data, timeline = site.get_data_and_timeline("1926164473", version=4)
+# data, timeline = site.get_data_and_timeline_from_gameid('Gamers Club Rift/Season 1_Quarterfinals_2_1')
+
+try:
+  data, timeline = site.get_data_and_timeline("ESPORTSTMNT02_3231936", version=5) # try to get V5 data, returns two values, the data and timeline json
+except KeyError:
+  data, timeline = site.get_data_and_timeline("ESPORTSTMNT02_3231936", version=4) # if it fails try getting V4 data
+
+data
+timeline
+
 '''
 team_liquid = Team("Team Liquid")
 team_liquid.addExistingPlayers()

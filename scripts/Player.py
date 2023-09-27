@@ -218,3 +218,39 @@ class Player:
         self.stats[tournament]['GoldPercentage'] = round(total_gold / total_team_gold, 3)
         
         return round(total_gold / total_team_gold, 3)
+    
+    def getDamangePercentage(self, tournament):
+        # Initial attempt to try and get damage percentage
+        # Other method requires to pull the JSON data from the postgame stats
+        player_dmg = 0
+        team_dmg = 0
+        
+        # get player's team
+        player_team = site.cargo_client.query(
+            limit=1,
+            tables="ScoreboardPlayers=SP, ScoreboardGames=SG",
+            fields="SP.Team",
+            where=f"SP.Link = '{self.playerName}' AND SG.Tournament = '{tournament}'",
+            join_on="SP.GameId=SG.GameId"
+        )
+        
+        player_team_dict = [dict(item) for item in player_team]
+        player_team = player_team_dict[0]['Team']
+        
+        # get player's dmg
+        player_dmg_response = site.cargo_client.query(
+            tables="ScoreboardPlayers=SP, ScoreboardGames=SG",
+            fields="SP.DamageToChampions, SP.Team, SG.Team1, SG.Team2, SG.GameId",
+            where=f"SP.Link = '{self.playerName}' AND SG.Tournament = '{tournament}'",
+            join_on="SP.GameId=SG.GameId"
+        )
+        
+        # get player's team dmg
+        team_dmg_response = site.cargo_client.query(
+            tables="ScoreboardPlayers=SP, ScoreboardGames=SG",
+            fields="SP.DamageToChampions, SP.Team, SG.Team1, SG.Team2, SG.GameId",
+            where=f"SP.Link = '{self.playerName}' AND SG.Tournament = '{tournament}'",
+            join_on="SP.GameId=SG.GameId"
+        )
+        
+        
