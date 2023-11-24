@@ -1,0 +1,73 @@
+The timeline should have a list of frames, one per minute in the game, 
+each one of those frames has information about player stats (participantFrames) 
+which gives you stats corresponding to the point in the game the frame represents, 
+so first frame has stats at sec 0, second frame at 60s, third frame at 120s
+
+TLDR:
+    Frame of each player = participantFrames
+    1 Frame = 1 Minute
+     -> Frame 1 = 0 seconds
+     -> Frame 2 = 60 seconds
+     -> Frame 3 = 120 seconds
+
+The list of events that comes together with participantFrames has a list of 
+events (item bought, champ killed, ward placed, etc) that happened during the 
+minute of game the frame represents, so first frame 0-60s, second 61-120s and so on
+
+For the purposes of analyzing the data, we will be using the timeline_json. This is the actual object
+that contains all of the data of that game with all of the activities throughout the game by frame.
+
+From what I can gather, it seems as though the participants are ID'd as such:
+    1 - Top 
+    2 - Jungle
+    3 - Mid
+    4 - Bot
+    5 - Support
+    6 - Top
+    7 - Jungle
+    8 - Mid
+    9 - Bot
+    10 - Support
+
+To acquire all of the frames (All events that occurred in the game):
+    timeline_json['frames'] - list
+
+As an example, lets use the Dignitas vs 100 Thieves LCS 2023-02-02 (WEEK2) game
+
+timeline_json['frames'][0] - dict
+    This will give us the first frame of the game
+    This frame will contain all of the events that occurred in the first minute of the game
+    This will also contain all of the participantFrames for each player in the game
+
+timeline_json['frames'][0]['participantFrames'] - dict
+    This will give us the participantFrames for the first frame of the game
+    This will contain all of the stats for each player in the game
+    This will also contain the participantId for each player in the game
+
+timeline_json['frames'][0]['participantFrames']['1'] - dict
+    This will give us the participantFrame for the first player in the game
+    This will contain all of the stats for the first player in the game in that frame
+    This will also contain the participantId for the first player in the game
+
+    There are 12 keys in this dictionary. These include:
+        championStats - dict
+            dictionary containing all of the stats for the champion at that point in time
+        currentGold - int
+            amount of gold that player currently has on them
+        damageStats - dict
+            dictionary containing all of the damage stats for the champion at that point in time
+        goldPerSecond - int
+            amount of gold that player is earning per second
+        jungleMinionsKilled - int
+        level - int
+        minionsKilled - int
+        participantId - int
+            participantId of the player (would just be the int value after the 'participantFrames')
+        position - dict
+            dictionary containing the x and y coordinates of the player on summoners rift
+        timeEnemySpentControlled - int
+            not sure
+        totalGold - int
+            total gold accrued by that player at that point in time in the game (at frame 0 it will always be 500 for all players)
+        xp - int
+            amount of xp that player has accrued at that point in time in the game (at frame 0 it will always be 0 for all players)

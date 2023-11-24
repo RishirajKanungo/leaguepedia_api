@@ -4,15 +4,13 @@ site = EsportsClient("lol")
 
 # Player class that contains all the information about a player (gamplay, team, etc.)
 class Player:
-    def __init__(self, playerName = '', teamName = '', dateJoined = '', roles = ''):
+    def __init__(self, playerName = ''):
         self.playerName = playerName
-        self.teamName = teamName
-        self.dateJoined = dateJoined
-        self.roles = roles
         
         # High level stats to check on based on split (Kills, Deaths, Assists, KDA, etc.)
         #TODO: Add most played champs that split as a list and eventually utilize the champ icons with the following: https://github.com/RheingoldRiver/leaguepedia_util/blob/master/champion_sprite.py
         self.stats = {"LCS 2023 Summer": {},
+                      "LCS 2023 Summer": {},
                       "LCS 2023 Spring": {},
                       "LCS 2022 Summer": {},
                       "LCS 2022 Spring": {},
@@ -31,6 +29,26 @@ class Player:
                       "LCS 2015 Summer": {},
                       "LCS 2015 Spring": {},
                       }
+        self.best_stats =  {"LCS 2023 Summer": {},
+                            "LCS 2023 Summer": {},
+                            "LCS 2023 Spring": {},
+                            "LCS 2022 Summer": {},
+                            "LCS 2022 Spring": {},
+                            "LCS 2021 Summer": {},
+                            "LCS 2021 Spring": {},
+                            "LCS 2020 Summer": {},
+                            "LCS 2020 Spring": {},
+                            "LCS 2019 Summer": {},
+                            "LCS 2019 Spring": {},
+                            "LCS 2018 Summer": {},
+                            "LCS 2018 Spring": {},
+                            "LCS 2017 Summer": {},
+                            "LCS 2017 Spring": {},
+                            "LCS 2016 Summer": {},
+                            "LCS 2016 Spring": {},
+                            "LCS 2015 Summer": {},
+                            "LCS 2015 Spring": {},
+                            }
         
     def __str__(self):
         return self.playerName + " joined " + self.teamName + " on " + self.dateJoined + " as " + self.roles
@@ -202,6 +220,7 @@ class Player:
         total_gold = 0
         total_team_gold = 0
         
+        # Get player's gold and team's gold
         gold_response = site.cargo_client.query(
             tables="ScoreboardPlayers=SP, ScoreboardGames=SG",
             fields="SP.Gold, SP.TeamGold",
@@ -254,3 +273,20 @@ class Player:
         )
         
         
+    def getBestKDA(self, tournament):
+        # Get the best KDA for the player in a given split
+        return
+    
+    def getBestDPM(self, tournament):
+        # Get the best DPM for the player in a given split
+        return
+    
+    def getBestCSPM(self, tournament):
+        # Get the best CSPM for the player in a given split
+        return
+    
+    def getBestCSD15(self, tournament):
+        # Get the best CSD15 for the player in a given split
+        return
+    
+    

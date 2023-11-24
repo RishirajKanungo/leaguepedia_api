@@ -16,7 +16,7 @@ player_name = 'Doublelift'
 
 # Test query to acquire all games/matches that 100 Thieves played in the 2023 Summer Split
 
-# This will provide the proper title for applying the JSON lookup
+# This will provide the proper title for applying the JSON lookup - Getting all RPG IDs of Doublelift on 100 Thieves
 response = site.cargo_client.query(
     tables="ScoreboardPlayers=SP, MatchScheduleGame=MSG",
     fields="MSG.RiotPlatformGameId",
@@ -24,7 +24,7 @@ response = site.cargo_client.query(
     join_on="SP.GameId=MSG.GameId",
 )
 
-output = [dict(item) for item in response]
+output = [dict(item) for item in response] # gets all the RPG IDs for the player
 
 output # [{'RiotPlatformGameId': 'ESPORTSTMNT02_3231936'}] - this is the proper title for the JSON lookup
 
@@ -38,14 +38,32 @@ except KeyError:
 data_json # returns the data json
 timeline_json # returns the timeline json
 
-data_json_object = json.dumps(data_json, indent=4)
+data_json_object = json.dumps(data_json, indent=4) #actually makes it a string
 timeline_json_object = json.dumps(timeline_json, indent=4)
 
+# Write the JSON data to a file
 with open('scripts/test_json_data/'+rpg+'_data.json', "w") as outfile:
     outfile.write(data_json_object)
     
+# Write the timeline JSON data to a file
+'''
+the timeline should have a list of frames, one per minute in the game, 
+each one of those frames has information about player stats (participantFrames) 
+which gives you stats corresponding to the point in the game the frame represents, 
+so first frame has stats at sec 0, second frame at 60s, third frame at 120s
+
+TLDR:
+    Frame of each player = participantFrames
+    1 Frame = 1 Minute
+     -> Frame 1 = 0 seconds
+     -> Frame 2 = 60 seconds
+     -> Frame 3 = 120 seconds
+'''
 with open('scripts/test_json_timeline/'+rpg+'_timeline.json', "w") as outfile:
     outfile.write(timeline_json_object)
     
-    
-    
+
+timeline_json['frames'][0]['participantFrames']['1']['totalGold'] # returns the total gold of the player at 0 seconds
+data_json
+data_json['teams'][0]['bans'][0]['championId'] # returns the champion ID of the first ban of the first team
+data_json['teams'][0]['objectives']

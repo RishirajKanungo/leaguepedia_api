@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" href="static/style.css" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Your Page Title</title>
+  </head>
+  <body>
+    <header>
+      <h1>Home</h1>
+    </header>
+
+    <nav>
+      <a href="#">Home</a>
+      <a href="player">Players</a>
+      <a href="#">Champions</a>
+    </nav>
+
+    <form action="{{ url_for('player') }}" method="post">
+      <div class="player-search-container">
+        <input
+          type="text"
+          name="player-search"
+          class="player-search"
+          placeholder="Query Player"
+        />
+      </div>
+
+      <div class="tournament-selector-container">
+        <select class="dropdown" name="tournament">
+          <option value="" disabled selected>Select a tournament</option>
+          <option value="lcs2023summer">LCS 2023 Summer</option>
+          <option value="lcs2023spring">LCS 2023 Spring</option>
+          <option value="lcs2022summer">LCS 2022 Summer</option>
+          <option value="lcs2022spring">LCS 2022 Spring</option>
+          <option value="lcs2021summer">LCS 2021 Summer</option>
+          <option value="lcs2021spring">LCS 2021 Spring</option>
+          <!-- Add more options as needed -->
+        </select>
+      </div>
+
+      <button type="submit" class="submit-player-query">Submit</button>
+    </form>
+
+  </body>
+</html>

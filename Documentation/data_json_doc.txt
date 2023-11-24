@@ -1,0 +1,6 @@
+The data JSON is a higher leveled comprehensive structure that provides a more glanceable set of data to be acquired vs using the 
+timeline_json data. 
+
+There are certain fields that would make this json more useful than the other time_line json, in that we can provide a screen that 
+shows the overall game data as opposed to specific things that would be grabbed by the timeline data.
+
