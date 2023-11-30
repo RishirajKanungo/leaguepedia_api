@@ -2,6 +2,7 @@ from mwrogue.esports_client import EsportsClient
 from Positions import Positions
 from Team import Team
 from Player import Player
+from Comparison import Comparison
 import pprint
 
 
@@ -17,14 +18,14 @@ tournament = "LCS 2023 Summer"
 #     join_on="SP.GameId=SG.GameId"
 # )
 
-doublelift = Player(player_name)
-doublelift.getKDAInSplit(tournament)
-doublelift.getCSPM(tournament)
-doublelift.getChampsPlayed(tournament)
-doublelift.getWinRate(tournament)
-doublelift.getDPM(tournament)
-doublelift.getGoldPercentage(tournament)
-pprint.pprint(doublelift.stats)
+# doublelift = Player(player_name)
+# doublelift.getKDAInSplit(tournament)
+# doublelift.getCSPM(tournament)
+# doublelift.getChampsPlayed(tournament)
+# doublelift.getWinRate(tournament)
+# doublelift.getDPM(tournament)
+# doublelift.getGoldPercentage(tournament)
+# pprint.pprint(doublelift.stats)
 
 # player_team = site.cargo_client.query(
 #             limit=1,
@@ -49,20 +50,6 @@ except KeyError:
 data
 timeline
 
-'''
-team_liquid = Team("Team Liquid")
-team_liquid.addExistingPlayers()
-team_liquid.getPlayers()
-'''
-
-# response = site.cargo_client.query(
-# 	limit= "max",
-# 	tables= "MatchScheduleGame=MSG, MatchSchedule=MS",
-# 	fields= "RiotPlatformGameId, Blue, Red",
-# 	where= "MSG.OverviewPage='LCS/2021 Season/Championship'",
-# 	join_on= "MSG.MatchId=MS.MatchId",
-# 	order_by= "MS.DateTime_UTC ASC"
-# )
 
 # Query for a matchup
 matchup_response = site.cargo_client.query(
@@ -73,11 +60,14 @@ matchup_response = site.cargo_client.query(
 )
 
 # Query for most played champions that split
-champs_played_response = site.cargo_client.query(
-    tables="ScoreboardPlayers=SP, ScoreboardGames=SG",
-    fields="SP.Champion",
-    where=f"SP.Link = '{player_name}' AND SG.Tournament = '{tournament}'",
-    join_on="SP.GameId=SG.GameId"
-)
+# champs_played_response = site.cargo_client.query(
+#     tables="ScoreboardPlayers=SP, ScoreboardGames=SG",
+#     fields="SP.Champion",
+#     where=f"SP.Link = '{player_name}' AND SG.Tournament = '{tournament}'",
+#     join_on="SP.GameId=SG.GameId"
+# )
 
-champs_played = [dict(item) for item in champs_played_response]
+# champs_played = [dict(item) for item in champs_played_response]
+
+not_doublelift = Comparison('Doublelift', 'ADC', 'LCS 2023 Summer')
+not_doublelift

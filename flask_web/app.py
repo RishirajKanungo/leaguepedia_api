@@ -22,8 +22,6 @@ def player():
         
         # Create an instance of the Player class with the provided player name
         player_instance = Player(queried_player)
-
-        # print(player_instance)
         
         # Call the methods of the Player class to get the desired attributes
         kda = player_instance.getKDAInSplit(selected_tournament)
@@ -45,13 +43,8 @@ def player():
         print(f"Gold Percentage: {gold_percentage}")
         print(f"DPM: {dpm}")
 
-        # If you want to redirect to the same page with the entered values, use flash messages
-        # flash(f"Queried Player: {queried_player}, Selected Tournament: {selected_tournament}")
-        # flash(f"KDA: {kda}, CSPM: {cspm}")
-        # flash(f"Champs Played: {champs_played}")
-        # flash(f"Winrate: {winrate}")
-        # flash(f"Gold Percentage: {gold_percentage}")
-        # flash(f"DPM: {dpm}")
+        for champ in champs_played:
+            print(champ)
 
         return render_template('player.html', queried_player=queried_player, selected_tournament=selected_tournament, kda=kda, cspm=cspm, champs_played=champs_played, winrate=winrate, gold_percentage=gold_percentage, dpm=dpm)
 

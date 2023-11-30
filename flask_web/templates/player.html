@@ -5,66 +5,120 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Your Page Title</title>
-  </head>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fantasy&display=swap">
+</head>
   <body>
-    <header>
-      <h1>Player Analysis</h1>
-    </header>
+    <div class="container">
+      <header>
+        <h1>Player Analysis</h1>
+      </header>
 
-    <nav>
-      <a href="#">Home</a>
-      <a href="player">Players</a>
-      <a href="#">Champions</a>
-    </nav>
+      <!-- Nav bar -->
+      <nav>
+        <a href="#">Home</a>
+        <a href="player">Players</a>
+        <a href="#">Champions</a>
+      </nav>
 
-    <form action="{{ url_for('player') }}" method="post">
-      <div class="player-search-container">
-        <input
-          type="text"
-          name="player-search"
-          class="player-search"
-          placeholder="Query Player"
-        />
+      <!-- Player query form -->
+      <form action="{{ url_for('player') }}" method="post">
+        <div class="player-search-container">
+          <input
+            type="text"
+            name="player-search"
+            class="player-search"
+            placeholder="Query Player"
+          />
+        </div>
+
+        <div class="tournament-selector-container">
+          <select class="dropdown" name="tournament">
+            <option value="" disabled selected>Select a tournament</option>
+            <option value="LCS 2023 Summer">LCS 2023 Summer</option>
+            <option value="LCS 2023 Spring">LCS 2023 Spring</option>
+            <option value="LCS 2022 Summer">LCS 2022 Summer</option>
+            <option value="LCS 2022 Spring">LCS 2022 Spring</option>
+            <option value="LCS 2021 Summer">LCS 2021 Summer</option>
+            <option value="LCS 2021 Spring">LCS 2021 Spring</option>
+            <!-- Add more options as needed -->
+          </select>
+        </div>
+
+        <button type="submit" class="submit-player-query" id="submitButton" disabled>Submit</button>
+      </form>
+
+      <!-- Which player we are dispaying -->
+      <div class="player-query-display">
+        {% if queried_player %}
+        <h2>{{ queried_player }}</h2>
+        {% endif %}
       </div>
 
-      <div class="tournament-selector-container">
-        <select class="dropdown" name="tournament">
-          <option value="" disabled selected>Select a tournament</option>
-          <option value="LCS 2023 Summer">LCS 2023 Summer</option>
-          <option value="LCS 2023 Spring">LCS 2023 Spring</option>
-          <option value="LCS 2022 Summer">LCS 2022 Summer</option>
-          <option value="LCS 2022 Spring">LCS 2022 Spring</option>
-          <option value="LCS 2021 Summer">LCS 2021 Summer</option>
-          <option value="LCS 2021 Spring">LCS 2021 Spring</option>
-          <!-- Add more options as needed -->
-        </select>
+      <!-- General Stats -->
+      <div class="data-container">
+        {% if queried_player %}
+        <div class="data-card">
+          <ul>
+            <li>Queried Player: {{ queried_player }}</li>
+            <li>Selected Tournament: {{ selected_tournament }}</li>
+            <li>KDA: {{ kda }}</li>
+            <li>CSPM: {{ cspm }}</li>
+            <li>Win Rate: {{ winrate }}</li>
+            <li>Gold Percentage: {{ gold_percentage }}</li>
+            <li>DPM: {{ dpm }}</li>
+          </ul>
+        </div>
+        {% endif %}
       </div>
 
-      <button type="submit" class="submit-player-query">Submit</button>
-    </form>
+      <!-- Champs played -->
+      <div class="data-container">
+        {% if queried_player %}
+        <div class="data-card">
+          <ul>
+            <li>Queried Player: {{ queried_player }}</li>
+            <!-- ... other information ... -->
+            <li>Champs Played:</li>
+            <ul>
+              {% for champ, count in champs_played.items() %}
+              <li>{{ champ }}: {{ count }}</li>
+              {% endfor %}
+            </ul>
+          </ul>
+        </div>
+        {% endif %}
+      </div>
 
-    <!-- Add this section to display the attributes -->
-    <!-- {% with messages = get_flashed_messages() %} {% if messages %}
-    <ul class="flashes">
-      {% for message in messages %}
-      <li>{{ message }}</li>
-      {% endfor %}
-    </ul>
-    {% endif %} {% endwith %} -->
+      <!-- Champions Played Dropdown -->
+      {% if queried_player %}
+      <select class="dropdown" id="championSelector">
+        <option value="" disabled selected>Select a champion</option>
+        {% for champ in champs_played.keys() %}
+        <option value="{{ champ }}">{{ champ }}</option>
+        {% endfor %}
+      </select>
+      {% endif %}
 
-    {% if queried_player %}
-    <div>
-      <ul>
-        <li>Queried Player: {{ queried_player }}</li>
-        <li>Selected Tournament: {{ selected_tournament }}</li>
-        <li>KDA: {{ kda }}</li>
-        <li>CSPM: {{ cspm }}</li>
-        <li>Champs Played: {{ champs_played }}</li>
-        <li>Win Rate: {{ winrate }}</li>
-        <li>Gold Percentage: {{ gold_percentage }}</li>
-        <li>DPM: {{ dpm }}</li>
-      </ul>
     </div>
-    {% endif %}
+
+    <!-- Form validation -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Get the input elements
+            var playerSearchInput = document.querySelector('.player-search');
+            var tournamentSelector = document.querySelector('.dropdown');
+            var submitButton = document.getElementById('submitButton');
+    
+            // Add an event listener to each input field to check for changes
+            playerSearchInput.addEventListener('input', toggleSubmitButton);
+            tournamentSelector.addEventListener('change', toggleSubmitButton);
+    
+            // Function to toggle the submit button based on the input fields
+            function toggleSubmitButton() {
+                submitButton.disabled = !(playerSearchInput.value && tournamentSelector.value);
+            }
+        });
+    </script>
+
   </body>
 </html>
