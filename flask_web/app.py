@@ -1,10 +1,10 @@
 from flask import Flask, render_template, request, redirect, url_for, flash
 from flask_sqlalchemy import SQLAlchemy
 import secrets
-# from Player import Player
 import sys
 sys.path.insert(0, '/Users/rishirajkanungo/Documents/GitHub/leaguepedia_api/') # add path to import a player
 from scripts.Player import Player
+from scripts.Comparison import Comparison
 
 app = Flask(__name__)
 app.secret_key = secrets.token_hex(16)  # Set a secure and random secret key

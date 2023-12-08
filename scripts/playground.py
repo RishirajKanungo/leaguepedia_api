@@ -17,3 +17,19 @@ response = site.cargo_client.query(
             join_on="SP.OverviewPage=T.OverviewPage"
         )
 
+# Get list of players that are not POI
+# response = site.cargo_client.query(
+#     tables="ScoreboardPlayers=SP, Tournaments=T, TournamentPlayers=TP",
+#     fields="SP.Link, SP.Team", # get the name and the team the non POI is apart of
+#     where=f"TP.Link != '{player_name}' AND T.StandardName = '{tournament}'",
+#     # join_on="SP.OverviewPage=T.OverviewPage"
+# )
+
+response = site.cargo_client.query(
+    tables="Tournaments=T, TournamentPlayers=TP",
+    fields="TP.Link, TP.Team", # get the name and the team the non POI is apart of
+    where=f"TP.Link != '{player_name}' AND T.StandardName = '{tournament}' AND TP.Role='Bot'",
+    join_on="TP.OverviewPage=T.OverviewPage"
+)
+
+response
