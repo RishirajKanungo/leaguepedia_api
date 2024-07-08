@@ -118,6 +118,6 @@ class Comparison:
         self.non_poi = non_poi # update the non_poi dictionary with the non_poi list
         
 
-# prelim test cases to see if setup works
+# prelim test cases to see if setup
 not_doublelift = Comparison('Doublelift', 'LCS 2023 Summer')
 not_doublelift

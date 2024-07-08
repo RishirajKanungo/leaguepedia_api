@@ -5,8 +5,10 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Your Page Title</title>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fantasy&display=swap">
-</head>
+    <!-- Include Plotly library -->
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <!-- <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fantasy&display=swap"> -->
+  </head>
   <body>
     <div class="container">
       <header>
@@ -44,7 +46,14 @@
           </select>
         </div>
 
-        <button type="submit" class="submit-player-query" id="submitButton" disabled>Submit</button>
+        <button
+          type="submit"
+          class="submit-player-query"
+          id="submitButton"
+          disabled
+        >
+          Submit
+        </button>
       </form>
 
       <!-- Which player we are dispaying -->
@@ -98,27 +107,65 @@
         {% endfor %}
       </select>
       {% endif %}
-
     </div>
+
+    <!-- Plotly graph placeholder -->
+    <div id="plotPlaceholder"></div>
+
+    <!-- Plotly graph placeholder -->
+    <div id="barchartPlaceholder"></div>
 
     <!-- Form validation -->
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            // Get the input elements
-            var playerSearchInput = document.querySelector('.player-search');
-            var tournamentSelector = document.querySelector('.dropdown');
-            var submitButton = document.getElementById('submitButton');
-    
-            // Add an event listener to each input field to check for changes
-            playerSearchInput.addEventListener('input', toggleSubmitButton);
-            tournamentSelector.addEventListener('change', toggleSubmitButton);
-    
-            // Function to toggle the submit button based on the input fields
-            function toggleSubmitButton() {
-                submitButton.disabled = !(playerSearchInput.value && tournamentSelector.value);
-            }
-        });
+      document.addEventListener("DOMContentLoaded", function () {
+        // Get the input elements
+        var playerSearchInput = document.querySelector(".player-search");
+        var tournamentSelector = document.querySelector(".dropdown");
+        var submitButton = document.getElementById("submitButton");
+        var plotPlaceholder = document.getElementById("plotPlaceholder");
+
+        // Add an event listener to each input field to check for changes
+        playerSearchInput.addEventListener("input", toggleSubmitButton);
+        tournamentSelector.addEventListener("change", toggleSubmitButton);
+
+        // Function to toggle the submit button based on the input fields
+        function toggleSubmitButton() {
+          var isDisabled = !(
+            playerSearchInput.value && tournamentSelector.value
+          );
+          submitButton.disabled = isDisabled;
+
+          console.log("Button disabled:", isDisabled);
+        }
+      });
     </script>
 
+<!-- Testing with seeing if I can acquire plot JSON from Flask -->
+    {% if plot_json %}
+    <!-- {{ plot_json }} -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var plotPlaceholder = document.getElementById('plotPlaceholder');
+            // var plotJson = ( plot_json | tojson | safe );
+            // var plotJson = '( plot_json | tojson | safe )'
+            var plotJson = '{{ plot_json | tojson | safe }}' // This plot works
+            console.log('Plot JSON:', plotJson);
+            Plotly.newPlot(plotPlaceholder, plotJson);
+        });
+    </script>
+    {% endif %}
+
+
+    <!-- BAR CHART FOR KDAS -->
+    {% if barchat_json %}
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var plotPlaceholder = document.getElementById('barchartPlaceholder');
+            var barchartJSON = '{{ barchat_json | tojson | safe }}' // This plot works
+            console.log('Barchart JSON:', barchartJSON);
+            Plotly.newPlot(barchartPlaceholder, barchartJSON);
+        });
+    </script>
+    {% endif %}
   </body>
 </html>
